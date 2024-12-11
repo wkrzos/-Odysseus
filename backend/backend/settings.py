@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'odysseus',
     'corsheaders',
     'django_extensions',
+    'rest_framework_swagger',
 ]
 
 MIDDLEWARE = [

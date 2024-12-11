@@ -95,3 +95,6 @@ class TripStagesStatistic(BaseModel):
     month = models.IntegerField()
     year = models.IntegerField()
     trip_count = models.IntegerField()
+
+class Parameters(BaseModel):
+    deleteTripAfterDays = models.IntegerField()
