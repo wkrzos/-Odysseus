@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from odysseus.views import TripStageListView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('trip-stages/', TripStageListView.as_view(), name='trip-stage-list'),
 ]

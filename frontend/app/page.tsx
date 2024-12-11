@@ -1,16 +1,45 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from 'react';
+import './page.css'; // Include some custom CSS for styling
 
-export default function Home() {
-  const [number, setNumber] = useState(0);
+function TripStagesPage() {
+  const [data, setData] = useState(null);
+  const [isLoading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('http://localhost:8000/trip-stages/')
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false)); // Handle fetch errors gracefully
+  }, []);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (!data || data.length === 0) return <p>No trip stages found</p>;
+
   return (
-    <div>
-      <div>{number}</div>
-      <button onClick={() => {
-        setNumber(number + 1);
-      }}>Click me</button>
+    <div className="trip-stages-container">
+      <h1>Trip Stages</h1>
+      <ul className="trip-stages-list">
+        {data.map((stage: any) => (
+          <li key={stage.id} className="trip-stage-card">
+            <h2>Trip Stage {stage.id}</h2>
+            <p><strong>Arrival Date:</strong> {stage.arrival_date}</p>
+            <p><strong>Departure Date:</strong> {stage.departure_date}</p>
+            <p><strong>Address ID:</strong> {stage.address}</p>
+            <p><strong>Country ID:</strong> {stage.country}</p>
+            <p><strong>Trip ID:</strong> {stage.trip}</p>
+            {stage.stay_organizer && (
+              <p><strong>Stay Organizer ID:</strong> {stage.stay_organizer}</p>
+            )}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
+
+export default TripStagesPage;
