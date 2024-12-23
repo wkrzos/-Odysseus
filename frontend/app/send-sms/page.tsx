@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useState } from 'react';
 import '../globals.css';
@@ -50,6 +50,8 @@ export default function SendSMS() {
     }
   };
 
+  const isMessageValid = validateMessage(message);
+
   return (
     <div>
       <h1>Send SMS</h1>
@@ -59,9 +61,21 @@ export default function SendSMS() {
         placeholder="Write your message here..."
         value={message}
         onChange={(e) => setMessage(e.target.value)}
+        style={{
+          borderColor: isMessageValid ? 'green' : 'red',
+          outline: isMessageValid ? 'none' : 'red solid 1px',
+        }}
       />
       <br />
-      <select value={country} onChange={(e) => setCountry(e.target.value)}>
+      <select
+        value={country}
+        onChange={(e) => setCountry(e.target.value)}
+        disabled={!isMessageValid}
+        style={{
+          backgroundColor: !isMessageValid ? '#f0f0f0' : '',
+          cursor: !isMessageValid ? 'not-allowed' : 'pointer',
+        }}
+      >
         <option value="">Select a country</option>
         {countries.map((c) => (
           <option key={c.id} value={c.name}>
@@ -70,7 +84,16 @@ export default function SendSMS() {
         ))}
       </select>
       <br />
-      <button onClick={handleSend}>Send Message</button>
+      <button
+        onClick={handleSend}
+        disabled={!isMessageValid || !country}
+        style={{
+          backgroundColor: !isMessageValid || !country ? '#cccccc' : '',
+          cursor: !isMessageValid || !country ? 'not-allowed' : 'pointer',
+        }}
+      >
+        Send Message
+      </button>
     </div>
   );
 }

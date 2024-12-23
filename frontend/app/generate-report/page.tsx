@@ -1,6 +1,7 @@
-'use client'
+'use client';
 
 import { useState } from 'react';
+import Select from 'react-select';
 import '../globals.css';
 
 interface Country {
@@ -9,20 +10,20 @@ interface Country {
 }
 
 interface ReportData {
-  country: string;
+  country: number;
   tripStages: number;
 }
 
 export default function GenerateReport() {
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
-  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+  const [selectedCountries, setSelectedCountries] = useState<number[]>([]);
   const [reportData, setReportData] = useState<ReportData[] | null>(null);
   const [countries] = useState<Country[]>([
     { id: 1, name: 'Poland' },
     { id: 2, name: 'Germany' },
     { id: 3, name: 'France' },
-  ]); // Mocked countries
+  ]);
   const [error, setError] = useState<string | null>(null);
 
   const handleGenerate = async () => {
@@ -49,12 +50,24 @@ export default function GenerateReport() {
     }
   };
 
-  const handleCountryChange = (country: string) => {
-    setSelectedCountries((prev) =>
-      prev.includes(country)
-        ? prev.filter((c) => c !== country)
-        : [...prev, country]
-    );
+  const generateCSV = () => {
+    if (!reportData) return;
+
+    const csvContent = [
+      ['Country (ID)', 'Trip Stages'],
+      ...reportData.map((row) => [row.country, row.tripStages]),
+    ]
+      .map((row) => row.join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'report.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -79,24 +92,24 @@ export default function GenerateReport() {
         />
       </label>
       <br />
-      <h3>Select Countries:</h3>
-      {countries.map((country) => (
-        <label key={country.id}>
-          <input
-            type="checkbox"
-            value={country.name}
-            checked={selectedCountries.includes(country.name)}
-            onChange={() => handleCountryChange(country.name)}
-          />
-          {country.name}
-        </label>
-      ))}
+      <h3>Select Countries (by ID):</h3>
+      <Select
+        options={countries.map((c) => ({ value: c.id, label: `${c.id} (${c.name})` }))}
+        isMulti
+        onChange={(selected) =>
+          setSelectedCountries(selected.map((s) => s.value as number))
+        }
+        value={countries
+          .filter((c) => selectedCountries.includes(c.id))
+          .map((c) => ({ value: c.id, label: `${c.id} (${c.name})` }))}
+      />
       <br />
       <button onClick={handleGenerate}>Generate Report</button>
       {reportData && (
         <div>
           <h3>Report Data</h3>
           <pre>{JSON.stringify(reportData, null, 2)}</pre>
+          <button onClick={generateCSV}>Download CSV</button>
         </div>
       )}
     </div>
