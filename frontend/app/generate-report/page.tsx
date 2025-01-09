@@ -9,8 +9,10 @@ interface Country {
   name: string;
 }
 
+// Updated: now the backend returns "countryId" and "countryName"
 interface ReportData {
-  country: number;
+  countryId: number;
+  countryName: string;
   tripStages: number;
 }
 
@@ -23,6 +25,7 @@ export default function GenerateReport() {
   const [error, setError] = useState<string | null>(null);
   const [isLoadingCountries, setIsLoadingCountries] = useState<boolean>(false);
 
+  // 1. Fetch country list
   useEffect(() => {
     const fetchCountries = async () => {
       setIsLoadingCountries(true);
@@ -44,6 +47,7 @@ export default function GenerateReport() {
     fetchCountries();
   }, []);
 
+  // 2. Generate the report
   const handleGenerate = async () => {
     if (!startDate || !endDate) {
       setError('Please select both start and end dates.');
@@ -54,8 +58,13 @@ export default function GenerateReport() {
       const response = await fetch('http://localhost:8000/trip/trip-stages/report/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ startDate, endDate, countries: selectedCountries }),
+        body: JSON.stringify({ 
+          startDate, 
+          endDate, 
+          countries: selectedCountries 
+        }),
       });
+
       if (response.ok) {
         const data: ReportData[] = await response.json();
         setReportData(data);
@@ -69,12 +78,13 @@ export default function GenerateReport() {
     }
   };
 
+  // 3. Generate CSV (using the new countryName)
   const generateCSV = () => {
     if (!reportData) return;
 
     const csvContent = [
-      ['Country (ID)', 'Trip Stages'],
-      ...reportData.map((row) => [row.country, row.tripStages]),
+      ['Country', 'Trip Stages'],
+      ...reportData.map((row) => [row.countryName, row.tripStages]),
     ]
       .map((row) => row.join(','))
       .join('\n');
@@ -89,14 +99,15 @@ export default function GenerateReport() {
     document.body.removeChild(link);
   };
 
+  // 4. Render the page
   return (
-    <div style={{ maxWidth: 600 }}>
-      <h1>Generate Report</h1>
+    <div style={{ maxWidth: 600, margin: 'auto', fontFamily: 'sans-serif' }}>
+      <h1>Generate Trip Stages Report</h1>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
       <label>
-        Start Date:
+        <strong>Start Date:</strong>
         <input
           type="date"
           value={startDate}
@@ -104,12 +115,13 @@ export default function GenerateReport() {
             setStartDate(e.target.value);
             setError(null);
           }}
+          style={{ marginLeft: '0.5rem' }}
         />
       </label>
       <br />
 
       <label>
-        End Date:
+        <strong>End Date:</strong>
         <input
           type="date"
           value={endDate}
@@ -117,6 +129,7 @@ export default function GenerateReport() {
             setEndDate(e.target.value);
             setError(null);
           }}
+          style={{ marginLeft: '0.5rem' }}
         />
       </label>
       <br />
@@ -144,15 +157,57 @@ export default function GenerateReport() {
       )}
       <br />
 
-      <button onClick={handleGenerate} disabled={isLoadingCountries}>
+      <button 
+        onClick={handleGenerate} 
+        disabled={isLoadingCountries}
+        style={{
+          backgroundColor: '#007BFF',
+          color: 'white',
+          padding: '0.5rem 1rem',
+          border: 'none',
+          cursor: 'pointer'
+        }}
+      >
         Generate Report
       </button>
 
       {reportData && (
-        <div>
+        <div style={{ marginTop: '2rem' }}>
           <h3>Report Data</h3>
-          <pre>{JSON.stringify(reportData, null, 2)}</pre>
-          <button onClick={generateCSV}>Download CSV</button>
+          <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+            <thead>
+              <tr style={{ backgroundColor: '#f2f2f2' }}>
+                <th style={{ border: '1px solid #ccc', padding: '8px' }}>Country</th>
+                <th style={{ border: '1px solid #ccc', padding: '8px' }}>Trip Stages</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reportData.map((row) => (
+                <tr key={row.countryId}>
+                  <td style={{ border: '1px solid #ccc', padding: '8px' }}>
+                    {row.countryName}
+                  </td>
+                  <td style={{ border: '1px solid #ccc', padding: '8px' }}>
+                    {row.tripStages}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <button 
+            onClick={generateCSV}
+            style={{
+              marginTop: '1rem',
+              backgroundColor: 'green',
+              color: 'white',
+              padding: '0.5rem 1rem',
+              border: 'none',
+              cursor: 'pointer'
+            }}
+          >
+            Download CSV
+          </button>
         </div>
       )}
     </div>

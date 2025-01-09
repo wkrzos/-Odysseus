@@ -32,8 +32,8 @@ class TripStageReportView(APIView):
     }
     Response:
     [
-      { "country": 1, "tripStages": 5 },
-      { "country": 2, "tripStages": 12 },
+      { "country": 1, "countryName": "Poland", "tripStages": 5 },
+      { "country": 2, "countryName": "Germany", "tripStages": 12 },
       ...
     ]
     """
@@ -48,40 +48,34 @@ class TripStageReportView(APIView):
         end_date = data['endDate']
         country_ids = data['countries']
 
-        # 2. Build the query
+        # 2. Build the queryset
         queryset = TripStage.objects.all()
 
-        # Filter by country if provided
         if country_ids:
             queryset = queryset.filter(country_id__in=country_ids)
 
-        # Filter by date range (assuming arrival_date or departure_date 
-        # must be within these bounds)
-        # Here, we interpret it as: stages that have arrival_date >= start_date 
-        # AND departure_date <= end_date
         queryset = queryset.filter(
             arrival_date__gte=start_date,
             departure_date__lte=end_date
         )
 
-        # 3. Aggregate by country
-        # We group by the "country" field, then count how many TripStages are in each group.
+        # 3. Group by "country" and get the country's name
+        #    This returns rows like:
+        #    { 'country': 1, 'country__name': 'Poland', 'tripStages': 5 }
         result = (
             queryset
-            .values('country')            # Group by country field
-            .annotate(tripStages=Count('id'))  # Count TripStage rows
-            .order_by('country')          # Just to have consistent ordering
+            .values('country', 'country__name')
+            .annotate(tripStages=Count('id'))
+            .order_by('country')
         )
 
-        # 4. Transform the result to match the desired format
-        # result might look like: [{"country": 1, "tripStages": 5}, ...]
-        # If "country" is None or you'd like to skip them, handle that logic accordingly.
-        response_data = [
-            {
-                "country": row['country'],
+        # 4. Transform to a friendlier structure
+        response_data = []
+        for row in result:
+            response_data.append({
+                "countryId": row['country'],
+                "countryName": row['country__name'],
                 "tripStages": row['tripStages']
-            }
-            for row in result
-        ]
+            })
 
         return Response(response_data, status=status.HTTP_200_OK)
