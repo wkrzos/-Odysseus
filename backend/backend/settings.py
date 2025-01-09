@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'apps.communication',
     'apps.data_analysis',
     'apps.parameters',
+    'apps.mock_external_systems',
 ]
 
 MIDDLEWARE = [

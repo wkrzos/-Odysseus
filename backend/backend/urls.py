@@ -20,4 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('trip/', include('apps.trip.urls')),  
     path('common/', include('apps.common.urls')),
+    path('', include('apps.mock_external_systems.urls')),
 ]
