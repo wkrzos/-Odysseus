@@ -38,10 +38,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'odysseus',
     'corsheaders',
     'django_extensions',
     'rest_framework_swagger',
+    'apps.common',
+    'apps.consulate',
+    'apps.registration',
+    'apps.trip',
+    'apps.communication',
+    'apps.data_analysis',
+    'apps.parameters',
 ]
 
 MIDDLEWARE = [
