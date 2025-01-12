@@ -1,10 +1,47 @@
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Count
 
-from .models import TripStage
-from .serializers import TripStageSerializer, TripStageReportRequestSerializer
+from .models import TripStage,Trip,TripWarning
+from .serializers import TripStageSerializer, TripStageReportRequestSerializer,TripSerializer,TripWarningSerializer
+from ..registration.serializers import ClientDataSerializer
+
+class TripWarningByCountryView(APIView):
+    def get(self,request,country_id):
+        warnings = TripWarning.objects.filter(country_id=country_id)
+        data = [{"id": warning.id, "content": warning.content} for warning in warnings][0] if len(warnings) == 1 else None
+        return Response(data, status=status.HTTP_200_OK)
+
+class TripCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        client_data = request.data.get("clientData")
+        trip_stages = request.data.get("tripStages")
+        client_data["resides_in"] = client_data["resides_in"]["id"]
+        # Walidacja danych klienta
+        client_serializer = ClientDataSerializer(data=client_data)
+        if not client_serializer.is_valid():
+            print("here1")
+            return Response(client_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Zapis danych klienta
+        client_instance = client_serializer.save()
+
+        # Utworzenie Tripa
+        trip = Trip.objects.create(client_data=client_instance)
+
+        # Zapis etapów podróży
+        for stage_data in trip_stages:
+            stage_data["trip"] = trip.id  # Powiązanie etapu z Tripem
+            stage_data["country"] = stage_data["country"]["id"]
+            stage_serializer = TripStageSerializer(data=stage_data)
+            if not stage_serializer.is_valid():
+                print("here2")
+                return Response(stage_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            stage_serializer.save()
+
+        return Response({"message": "Trip created successfully", "trip_id": trip.id}, status=status.HTTP_201_CREATED)
 
 
 class TripStageListView(APIView):

@@ -1,45 +1,22 @@
-'use client';
+import Link from "next/link";
 
-import { useState, useEffect } from 'react';
-import './page.css'; // Include some custom CSS for styling
-
-function TripStagesPage() {
-  const [data, setData] = useState(null);
-  const [isLoading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('http://localhost:8000/trip-stages/')
-      .then((res) => res.json())
-      .then((data) => {
-        setData(data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false)); // Handle fetch errors gracefully
-  }, []);
-
-  if (isLoading) return <p>Loading...</p>;
-  if (!data || data.length === 0) return <p>No trip stages found</p>;
-
+function Page() {
   return (
-    <div className="trip-stages-container">
-      <h1>Trip Stages</h1>
-      <ul className="trip-stages-list">
-        {data.map((stage: any) => (
-          <li key={stage.id} className="trip-stage-card">
-            <h2>Trip Stage {stage.id}</h2>
-            <p><strong>Arrival Date:</strong> {stage.arrival_date}</p>
-            <p><strong>Departure Date:</strong> {stage.departure_date}</p>
-            <p><strong>Address ID:</strong> {stage.address}</p>
-            <p><strong>Country ID:</strong> {stage.country}</p>
-            <p><strong>Trip ID:</strong> {stage.trip}</p>
-            {stage.stay_organizer && (
-              <p><strong>Stay Organizer ID:</strong> {stage.stay_organizer}</p>
-            )}
-          </li>
-        ))}
-      </ul>
+    <div>
+      <h1>Odysseus Project</h1>
+      <nav>
+        <ul>
+          <Link href="/register">Register</Link>
+        </ul>
+        <ul>
+          <Link href="/tripstages">Trip Stages</Link>
+        </ul>
+        <ul>
+          <Link href="/messages">Messages</Link>
+        </ul>
+      </nav>
     </div>
   );
 }
 
-export default TripStagesPage;
+export default Page;

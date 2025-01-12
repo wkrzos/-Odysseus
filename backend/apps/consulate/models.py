@@ -9,6 +9,8 @@ class Consulate(BaseModel):
         related_name='consulates'
     )
 
+    
+
 class ConsulateEmployee(BaseModel):
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)
@@ -17,3 +19,6 @@ class ConsulateEmployee(BaseModel):
         on_delete=models.CASCADE,
         related_name='employees'
     )
+
+    def __str__(self):
+        return f"{self.name} {self.surname}"
