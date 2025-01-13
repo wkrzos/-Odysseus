@@ -8,7 +8,7 @@ function TripStagesPage() {
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8000/trip-stages/")
+    fetch("http://localhost:8000/trip/trip-stages/")
       .then((res) => res.json())
       .then((data) => {
         setData(data);

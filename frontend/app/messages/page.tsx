@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import "../css/messages.css";
+import { components } from "../types/api";
 
 // Przykładowe dane w JSON
 const messages = [
@@ -47,6 +48,8 @@ const messages = [
     author: "Max Mustermann",
   },
 ];
+
+type Country = components["schemas"]["Country"];
 
 const ConsulateMessages = () => {
   const [filters, setFilters] = useState({

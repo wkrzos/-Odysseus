@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import TripStage
+from .models import TripStage, StayOrganizerType, StayOrganizer,Trip, TripWarning
 
 class TripStageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,3 +23,35 @@ class TripStageReportRequestSerializer(serializers.Serializer):
         child=serializers.IntegerField(), 
         allow_empty=True
     )
+
+class TripWarningSerializer(serializers.Serializer):
+    class Meta:
+        model = TripWarning
+        fields = [
+            'id',
+            'content',
+            'country'
+        ]
+
+class TripSerializer(serializers.Serializer):
+    class Meta:
+        model = Trip,
+        fields = [
+            'id',
+            'client_data'
+        ]
+
+class StayOrganizerSerializer(serializers.Serializer):
+    type_choices = serializers.SerializerMethodField()
+
+    class Meta:
+        model = StayOrganizer,
+        fields =[
+            'id',
+            'name',
+            'type',
+            'type_choices'
+        ]
+
+    def get_type_choices(self,obj):
+        return StayOrganizerType.choices
