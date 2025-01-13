@@ -13,8 +13,7 @@ interface PersonalData {
   apartmentNumber?: string;
 }
 
-var countries = ["Poland", "Germany"]
-
+var countries = ["Poland", "Germany"];
 
 function PersonalData({
   isClicked,
@@ -52,23 +51,23 @@ function PersonalData({
     const validationErrors: Partial<PersonalData> = {};
 
     // if (!formData.firstName) validationErrors.firstName = "First name is required.";
-    // else if (formData.firstName.length < 2 || formData.firstName.length > 50) 
+    // else if (formData.firstName.length < 2 || formData.firstName.length > 50)
     //   validationErrors.firstName = "First name must be between 2 and 50 characters";
     // if (!formData.lastName) validationErrors.lastName = "Last name is required";
-    // else if (formData.lastName.length < 2 || formData.lastName.length > 50) 
+    // else if (formData.lastName.length < 2 || formData.lastName.length > 50)
     //   validationErrors.lastName = "Last name must be between 2 and 50 characters";
     // if (!formData.email)
     //   validationErrors.email = "Email is required";
     // else if ( !/^[\w-.]+@([\w-]+.)+[\w-]{2,4}$/.test(formData.email))
     //   validationErrors.email = "Invalid email"
     // if (!formData.phone) validationErrors.phone = "Phone number is required";
-    // if (!formData.country) validationErrors.country = "Country is required" 
+    // if (!formData.country) validationErrors.country = "Country is required"
     // if (!formData.pesel) validationErrors.pesel = "PESEL is required";
     // else if (!/^[0-9]{2}([02468]1|[13579][012])(0[1-9]|1[0-9]|2[0-9]|3[01])[0-9]{5}$/.test(formData.pesel)) validationErrors.pesel = "Invalid PESEL";
     // if (!formData.buildingNumber) validationErrors.buildingNumber = "Building number is required";
     // if (!formData.locality) validationErrors.locality = "Town is required";
     // if (!formData.street) validationErrors.street = "Street is required";
- 
+
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
@@ -125,8 +124,8 @@ function PersonalData({
             id="country"
             name="country"
             value={formData.country} // Powiązanie z aktualnym stanem
-            onChange={(e) =>
-              setFormData({ ...formData, country: e.target.value }) // Aktualizacja stanu
+            onChange={
+              (e) => setFormData({ ...formData, country: e.target.value }) // Aktualizacja stanu
             }
           >
             <option value="" disabled>
@@ -174,7 +173,9 @@ function PersonalData({
             value={formData.buildingNumber}
             onChange={handleChange}
           />
-          {errors.buildingNumber && <span className="error">{errors.buildingNumber}</span>}
+          {errors.buildingNumber && (
+            <span className="error">{errors.buildingNumber}</span>
+          )}
         </div>
 
         <div>

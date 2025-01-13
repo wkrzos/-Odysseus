@@ -100,6 +100,38 @@ export interface paths {
         patch: operations["partialUpdateCountry"];
         trace?: never;
     };
+    "/common/address/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listAddresses"];
+        put?: never;
+        post: operations["createAddress"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/common/address/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["retrieveAddress"];
+        put: operations["updateAddress"];
+        post?: never;
+        delete: operations["destroyAddress"];
+        options?: never;
+        head?: never;
+        patch: operations["partialUpdateAddress"];
+        trace?: never;
+    };
     "/communication/messages/": {
         parameters: {
             query?: never;
@@ -110,6 +142,22 @@ export interface paths {
         get: operations["listMessages"];
         put?: never;
         post: operations["createMessage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/communication/messages/with_countries/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listWithCountriesMessage"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -223,23 +271,69 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        Trip: Record<string, never>;
+        Trip: {
+            readonly id?: number;
+            client_data: {
+                readonly id?: number;
+                address: {
+                    readonly id?: number;
+                    /** Format: date-time */
+                    readonly created_at?: string;
+                    /** Format: date-time */
+                    readonly updated_at?: string;
+                    street: string;
+                    building_number: string;
+                    apartment_number?: string | null;
+                    locality: string;
+                };
+                resides_in: {
+                    readonly id?: number;
+                    code: string;
+                    name: string;
+                }[];
+                /** Format: date-time */
+                readonly created_at?: string;
+                /** Format: date-time */
+                readonly updated_at?: string;
+                name: string;
+                surname: string;
+                pesel: string;
+                phone_number: string;
+                /** Format: email */
+                email_address: string;
+            };
+        };
         Country: {
             readonly id?: number;
             code: string;
             name: string;
         };
+        Address: {
+            readonly id?: number;
+            /** Format: date-time */
+            readonly created_at?: string;
+            /** Format: date-time */
+            readonly updated_at?: string;
+            street: string;
+            building_number: string;
+            apartment_number?: string | null;
+            locality: string;
+        };
         Message: {
             readonly id?: number;
-            content: string;
-            /** Format: date */
-            readonly date?: string;
             recipients: {
                 readonly id?: number;
                 /** @enum {string} */
                 status?: "sent" | "notSent";
                 phone_number: string;
-            }[];
+            };
+            /** Format: date-time */
+            readonly created_at?: string;
+            /** Format: date-time */
+            readonly updated_at?: string;
+            content: string;
+            /** Format: date */
+            readonly date?: string;
             author: number;
         };
         Recipient: {
@@ -248,7 +342,35 @@ export interface components {
             status?: "sent" | "notSent";
             phone_number: string;
         };
-        ClientData: Record<string, never>;
+        ClientData: {
+            readonly id?: number;
+            address: {
+                readonly id?: number;
+                /** Format: date-time */
+                readonly created_at?: string;
+                /** Format: date-time */
+                readonly updated_at?: string;
+                street: string;
+                building_number: string;
+                apartment_number?: string | null;
+                locality: string;
+            };
+            resides_in: {
+                readonly id?: number;
+                code: string;
+                name: string;
+            }[];
+            /** Format: date-time */
+            readonly created_at?: string;
+            /** Format: date-time */
+            readonly updated_at?: string;
+            name: string;
+            surname: string;
+            pesel: string;
+            phone_number: string;
+            /** Format: email */
+            email_address: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -607,6 +729,148 @@ export interface operations {
             };
         };
     };
+    listAddresses: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Address"][];
+                };
+            };
+        };
+    };
+    createAddress: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["Address"];
+                "application/x-www-form-urlencoded": components["schemas"]["Address"];
+                "multipart/form-data": components["schemas"]["Address"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Address"];
+                };
+            };
+        };
+    };
+    retrieveAddress: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this address. */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Address"];
+                };
+            };
+        };
+    };
+    updateAddress: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this address. */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["Address"];
+                "application/x-www-form-urlencoded": components["schemas"]["Address"];
+                "multipart/form-data": components["schemas"]["Address"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Address"];
+                };
+            };
+        };
+    };
+    destroyAddress: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this address. */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    partialUpdateAddress: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this address. */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["Address"];
+                "application/x-www-form-urlencoded": components["schemas"]["Address"];
+                "multipart/form-data": components["schemas"]["Address"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Address"];
+                };
+            };
+        };
+    };
     listMessages: {
         parameters: {
             query?: never;
@@ -642,6 +906,25 @@ export interface operations {
         };
         responses: {
             201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Message"];
+                };
+            };
+        };
+    };
+    listWithCountriesMessage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };

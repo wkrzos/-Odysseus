@@ -1,10 +1,10 @@
 "use client";
-import React, { useState } from "react";
-import "../css/messages.css";
-import { components } from "../types/api";
+import React, { useState, useEffect } from "react";
+import axiosInstance from "@/axiosConfig";
+import { components, operations } from "../types/api";
 
 // Przykładowe dane w JSON
-const messages = [
+const messages_example = [
   {
     id: 1,
     countries: ["Poland", "Germany"],
@@ -49,16 +49,61 @@ const messages = [
   },
 ];
 
-type Country = components["schemas"]["Country"];
+interface MessageWithCountries {
+  id: number;
+  content: string;
+  date: string;
+  author: string;
+  countries: string[];
+}
+
+interface Country {
+  id: number;
+  code: string;
+  name: string;
+}
 
 const ConsulateMessages = () => {
+  const [messages, setMessages] = useState<MessageWithCountries[]>([]);
+  const [countries, setCountries] = useState<Country[]>([]);
   const [filters, setFilters] = useState({
     countries: "",
     startDate: "",
     endDate: "",
   });
-  const [filteredMessages, setFilteredMessages] = useState<any[]>([]);
+  const [filteredMessages, setFilteredMessages] = useState<
+    MessageWithCountries[]
+  >([]);
+  const [loading, setLoading] = useState<boolean>(true); // Indykator ładowania
+  const [error, setError] = useState<string | null>(null); // Obsługa błędów
 
+  // Pobierz dane z API podczas ładowania komponentu
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const messagesResponse = await axiosInstance.get<
+          MessageWithCountries[]
+        >("communication/messages/with_countries");
+        setMessages(messagesResponse.data);
+        setFilteredMessages(messagesResponse.data);
+
+        const countriesResponse = await axiosInstance.get<Country[]>(
+          "common/countries"
+        );
+
+        setCountries(countriesResponse.data);
+      } catch (err) {
+        setError("Failed to load messages.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Obsługa zmiany filtrów
   const handleFilterChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -66,25 +111,33 @@ const ConsulateMessages = () => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Filtruj wiadomości
   const handleSearch = () => {
     const { countries, startDate, endDate } = filters;
     const filtered = messages.filter((message) => {
-      const messageDate = new Date(message.date);
-      const isInCountry = countries
-        ? message.countries.includes(countries)
-        : true;
+      const messageDate = new Date(message.date || "");
+      const inCountry =
+        !countries ||
+        message.countries.some((country) =>
+          country.toLowerCase().includes(countries.toLowerCase())
+        );
       const isInDateRange =
         (!startDate || messageDate >= new Date(startDate)) &&
         (!endDate || messageDate <= new Date(endDate));
-      return isInCountry && isInDateRange;
+      return isInDateRange && inCountry;
     });
     setFilteredMessages(filtered);
   };
 
+  // Resetuj filtry
   const handleCancel = () => {
     setFilters({ countries: "", startDate: "", endDate: "" });
-    setFilteredMessages([]);
+    setFilteredMessages(messages); // Przywróć wszystkie wiadomości
   };
+
+  // Obsługa ładowania lub błędu
+  if (loading) return <div>Loading messages...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="container">
@@ -103,9 +156,11 @@ const ConsulateMessages = () => {
               className="input"
             >
               <option value="">All</option>
-              <option value="Poland">Poland</option>
-              <option value="USA">USA</option>
-              <option value="Germany">Germany</option>
+              {countries.map((country) => (
+                <option key={country.id} value={country.name}>
+                  {country.name}
+                </option>
+              ))}
             </select>
           </label>
           <label className="label">
@@ -140,14 +195,15 @@ const ConsulateMessages = () => {
       </div>
 
       {/* Wyświetlanie wiadomości */}
-      {filteredMessages.length > 0 && (
+      {filteredMessages.length > 0 ? (
         <div className="messages">
           <h2>Messages</h2>
           <ul>
             {filteredMessages.map((message) => (
               <li key={message.id} className="message">
-                <strong>Date:</strong> {message.date} <br />
-                <strong>Countries:</strong> {message.countries.join(", ")}{" "}
+                <strong>Date:</strong> {message.date || "Unknown"} <br />
+                <strong>Countries:</strong>{" "}
+                {message.countries.map((country) => country).join(", ")}
                 <br />
                 <strong>Author:</strong> {message.author} <br />
                 <strong>Content:</strong> {message.content}
@@ -155,6 +211,8 @@ const ConsulateMessages = () => {
             ))}
           </ul>
         </div>
+      ) : (
+        <div>No messages found.</div>
       )}
     </div>
   );

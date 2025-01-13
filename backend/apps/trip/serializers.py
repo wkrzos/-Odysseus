@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import TripStage, StayOrganizerType, StayOrganizer,Trip, TripWarning
+from apps.registration.serializers import ClientDataSerializer
 
 class TripStageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,9 +34,10 @@ class TripWarningSerializer(serializers.Serializer):
             'country'
         ]
 
-class TripSerializer(serializers.Serializer):
+class TripSerializer(serializers.ModelSerializer):
+    client_data = ClientDataSerializer()
     class Meta:
-        model = Trip,
+        model = Trip
         fields = [
             'id',
             'client_data'
