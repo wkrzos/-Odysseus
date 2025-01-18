@@ -18,16 +18,16 @@ class StayOrganizer(BaseModel):
             raise ValidationError(_('Travel Agency must have a name.'))
 
 class Trip(BaseModel):
-    client_data = models.ForeignKey(
+    client_data = models.OneToOneField(
         ClientData,
         on_delete=models.CASCADE,
-        related_name='trips'
+        related_name='trip'
     )
 
 class TripStage(BaseModel):
     arrival_date = models.DateField()
     departure_date = models.DateField()
-    address = models.ForeignKey(Address, on_delete=models.CASCADE)
+    address = models.OneToOneField(Address, on_delete=models.CASCADE)
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
     trip = models.ForeignKey(
         Trip,

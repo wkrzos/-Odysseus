@@ -1,21 +1,26 @@
 from rest_framework import serializers
 from .models import TripStage, StayOrganizerType, StayOrganizer,Trip, TripWarning
 from apps.registration.serializers import ClientDataSerializer
+from apps.common.serializers import AddressSerializer
+from apps.common.models import Country,Address
 
 class TripStageSerializer(serializers.ModelSerializer):
+    address = AddressSerializer()
+    country = serializers.PrimaryKeyRelatedField(queryset=Country.objects.all())
     class Meta:
         model = TripStage
-        fields = [
-            'id',
-            'arrival_date',
-            'departure_date',
-            'address',
-            'country',
-            'trip',
-            'stay_organizer',
-            'created_at',
-            'updated_at'
-        ]
+        fields = '__all__'
+
+    def create(self, validated_data):
+        countryId = validated_data.pop("country")
+
+        address_data = validated_data.pop("address")
+
+        address = Address.objects.create(**address_data)
+
+        tripStage = TripStage.objects.create( country=countryId,address=address, **validated_data)
+
+        return tripStage
 
 class TripStageReportRequestSerializer(serializers.Serializer):
     startDate = serializers.DateField()
@@ -52,8 +57,4 @@ class StayOrganizerSerializer(serializers.Serializer):
             'id',
             'name',
             'type',
-            'type_choices'
         ]
-
-    def get_type_choices(self,obj):
-        return StayOrganizerType.choices

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Select from 'react-select';
-import '../globals.css';
+import { useState, useEffect } from "react";
+import Select from "react-select";
+import "../globals.css";
 
 interface Country {
   id: number;
@@ -17,8 +17,8 @@ interface ReportData {
 }
 
 export default function GenerateReport() {
-  const [startDate, setStartDate] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
   const [selectedCountries, setSelectedCountries] = useState<number[]>([]);
   const [reportData, setReportData] = useState<ReportData[] | null>(null);
   const [countries, setCountries] = useState<Country[]>([]);
@@ -30,15 +30,15 @@ export default function GenerateReport() {
     const fetchCountries = async () => {
       setIsLoadingCountries(true);
       try {
-        const response = await fetch('http://localhost:8000/common/countries/');
+        const response = await fetch("http://localhost:8000/common/countries/");
         if (!response.ok) {
-          throw new Error('Failed to load countries');
+          throw new Error("Failed to load countries");
         }
         const data: Country[] = await response.json();
         setCountries(data);
       } catch (err) {
         console.error(err);
-        setError('Could not load country list. Please try again.');
+        setError("Could not load country list. Please try again.");
       } finally {
         setIsLoadingCountries(false);
       }
@@ -50,31 +50,34 @@ export default function GenerateReport() {
   // 2. Generate the report
   const handleGenerate = async () => {
     if (!startDate || !endDate) {
-      setError('Please select both start and end dates.');
+      setError("Please select both start and end dates.");
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:8000/trip/trip-stages/report/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          startDate, 
-          endDate, 
-          countries: selectedCountries 
-        }),
-      });
+      const response = await fetch(
+        "http://localhost:8000/trip/trip-stages/report/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            startDate,
+            endDate,
+            countries: selectedCountries,
+          }),
+        }
+      );
 
       if (response.ok) {
         const data: ReportData[] = await response.json();
         setReportData(data);
         setError(null);
       } else {
-        setError('Failed to generate the report. Please try again.');
+        setError("Failed to generate the report. Please try again.");
       }
     } catch (err) {
       console.error(err);
-      setError('Failed to generate the report. Please try again.');
+      setError("Failed to generate the report. Please try again.");
     }
   };
 
@@ -83,17 +86,17 @@ export default function GenerateReport() {
     if (!reportData) return;
 
     const csvContent = [
-      ['Country', 'Trip Stages'],
+      ["Country", "Trip Stages"],
       ...reportData.map((row) => [row.countryName, row.tripStages]),
     ]
-      .map((row) => row.join(','))
-      .join('\n');
+      .map((row) => row.join(","))
+      .join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.setAttribute('download', 'report.csv');
+    link.setAttribute("download", "report.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -101,10 +104,10 @@ export default function GenerateReport() {
 
   // 4. Render the page
   return (
-    <div style={{ maxWidth: 600, margin: 'auto', fontFamily: 'sans-serif' }}>
+    <div style={{ maxWidth: 600, margin: "auto", fontFamily: "sans-serif" }}>
       <h1>Generate Trip Stages Report</h1>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <label>
         <strong>Start Date:</strong>
@@ -115,7 +118,7 @@ export default function GenerateReport() {
             setStartDate(e.target.value);
             setError(null);
           }}
-          style={{ marginLeft: '0.5rem' }}
+          style={{ marginLeft: "0.5rem" }}
         />
       </label>
       <br />
@@ -129,7 +132,7 @@ export default function GenerateReport() {
             setEndDate(e.target.value);
             setError(null);
           }}
-          style={{ marginLeft: '0.5rem' }}
+          style={{ marginLeft: "0.5rem" }}
         />
       </label>
       <br />
@@ -157,37 +160,41 @@ export default function GenerateReport() {
       )}
       <br />
 
-      <button 
-        onClick={handleGenerate} 
+      <button
+        onClick={handleGenerate}
         disabled={isLoadingCountries}
         style={{
-          backgroundColor: '#007BFF',
-          color: 'white',
-          padding: '0.5rem 1rem',
-          border: 'none',
-          cursor: 'pointer'
+          backgroundColor: "#007BFF",
+          color: "white",
+          padding: "0.5rem 1rem",
+          border: "none",
+          cursor: "pointer",
         }}
       >
         Generate Report
       </button>
 
       {reportData && (
-        <div style={{ marginTop: '2rem' }}>
+        <div style={{ marginTop: "2rem" }}>
           <h3>Report Data</h3>
-          <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+          <table style={{ borderCollapse: "collapse", width: "100%" }}>
             <thead>
-              <tr style={{ backgroundColor: '#f2f2f2' }}>
-                <th style={{ border: '1px solid #ccc', padding: '8px' }}>Country</th>
-                <th style={{ border: '1px solid #ccc', padding: '8px' }}>Trip Stages</th>
+              <tr style={{ backgroundColor: "#f2f2f2" }}>
+                <th style={{ border: "1px solid #ccc", padding: "8px" }}>
+                  Country
+                </th>
+                <th style={{ border: "1px solid #ccc", padding: "8px" }}>
+                  Trip Stages
+                </th>
               </tr>
             </thead>
             <tbody>
               {reportData.map((row) => (
                 <tr key={row.countryId}>
-                  <td style={{ border: '1px solid #ccc', padding: '8px' }}>
+                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>
                     {row.countryName}
                   </td>
-                  <td style={{ border: '1px solid #ccc', padding: '8px' }}>
+                  <td style={{ border: "1px solid #ccc", padding: "8px" }}>
                     {row.tripStages}
                   </td>
                 </tr>
@@ -195,15 +202,15 @@ export default function GenerateReport() {
             </tbody>
           </table>
 
-          <button 
+          <button
             onClick={generateCSV}
             style={{
-              marginTop: '1rem',
-              backgroundColor: 'green',
-              color: 'white',
-              padding: '0.5rem 1rem',
-              border: 'none',
-              cursor: 'pointer'
+              marginTop: "1rem",
+              backgroundColor: "green",
+              color: "white",
+              padding: "0.5rem 1rem",
+              border: "none",
+              cursor: "pointer",
             }}
           >
             Download CSV

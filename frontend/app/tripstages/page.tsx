@@ -34,10 +34,10 @@ function TripStagesPage() {
               <strong>Departure Date:</strong> {stage.departure_date}
             </p>
             <p>
-              <strong>Address ID:</strong> {stage.address}
+              <strong>Address ID:</strong> {stage.address.id}
             </p>
             <p>
-              <strong>Country ID:</strong> {stage.country}
+              <strong>Country ID:</strong> {stage.country.id}
             </p>
             <p>
               <strong>Trip ID:</strong> {stage.trip}

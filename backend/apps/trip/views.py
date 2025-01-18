@@ -6,38 +6,42 @@ from django.db.models import Count
 
 from .models import TripStage,Trip,TripWarning
 from .serializers import TripStageSerializer, TripStageReportRequestSerializer,TripSerializer,TripWarningSerializer
+from ..registration.serializers import ClientDataSerializer
 
 class TripWarningByCountryView(APIView):
     def get(self,request,country_id):
         warnings = TripWarning.objects.filter(country_id=country_id)
-        data = [{"id": warning.id, "content": warning.content} for warning in warnings]
+        data = [{"id": warning.id, "content": warning.content} for warning in warnings][0] if len(warnings) == 1 else None
         return Response(data, status=status.HTTP_200_OK)
 
-class TripViewSet(ModelViewSet):
-    queryset = Trip.objects.all()
-    serializer_class = TripSerializer
+class TripCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        client_data = request.data.get("clientData")
+        trip_stages = request.data.get("tripStages")
+        client_data["resides_in"] = client_data["resides_in"]["id"]
+        # Walidacja danych klienta
+        client_serializer = ClientDataSerializer(data=client_data)
+        if not client_serializer.is_valid():
+            print("here1")
+            return Response(client_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def create(self, request, *args, **kwargs):
-        data = request.data
-        # 1. Walidacja klienta
-        client_data_id = data.get('client_data')
-        if not client_data_id:
-            return Response({"error": "Client data is required"}, status=status.HTTP_400_BAD_REQUEST)
+        # Zapis danych klienta
+        client_instance = client_serializer.save()
 
-        # 2. Tworzenie Trip
-        trip_serializer = TripSerializer(data={"client_data": client_data_id})
-        trip_serializer.is_valid(raise_exception=True)
-        trip = trip_serializer.save()
+        # Utworzenie Tripa
+        trip = Trip.objects.create(client_data=client_instance)
 
-        # 3. Tworzenie etapów wycieczki (TripStages)
-        trip_stages = data.get('trip_stages', [])
+        # Zapis etapów podróży
         for stage_data in trip_stages:
-            stage_data['trip'] = trip.id  # Powiąż etap z utworzoną wycieczką
+            stage_data["trip"] = trip.id  # Powiązanie etapu z Tripem
+            stage_data["country"] = stage_data["country"]["id"]
             stage_serializer = TripStageSerializer(data=stage_data)
-            stage_serializer.is_valid(raise_exception=True)
+            if not stage_serializer.is_valid():
+                print("here2")
+                return Response(stage_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             stage_serializer.save()
 
-        return Response(trip_serializer.data, status=status.HTTP_201_CREATED)
+        return Response({"message": "Trip created successfully", "trip_id": trip.id}, status=status.HTTP_201_CREATED)
 
 
 class TripStageListView(APIView):

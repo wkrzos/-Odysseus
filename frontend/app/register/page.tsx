@@ -1,26 +1,76 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axiosInstance from "@/axiosConfig";
+import { ClientData, TripStage, Country } from "../types/types";
+import ClientDataPage from "./clientData";
+import TripStagesPage from "./tripStages";
+import "../globals.css";
 
-import "../css/register.css";
-import PersonalData from "./personalData";
-import TripStages from "./tripStages";
+function App() {
+  const [currentPage, setCurrentPage] = useState<"register" | "tripStages">(
+    "register"
+  );
+  const [clientData, setClientData] = useState<ClientData | null>(null);
+  const [tripStages, setTripStages] = useState<TripStage[]>([]);
+  const [countries, setCountries] = useState<Country[]>([]);
 
-function RegisterPage() {
-  const [isClicked, onClick] = useState(false);
+  const handleContinue = (data: ClientData) => {
+    setClientData(data);
+    setCurrentPage("tripStages");
+  };
 
-  const pressButton = () => onClick(!isClicked);
-  if (isClicked) {
-    return (
-      <TripStages isClicked={isClicked} pressButton={pressButton}></TripStages>
-    );
-  } else {
-    return (
-      <PersonalData
-        isClicked={isClicked}
-        pressButton={pressButton}
-      ></PersonalData>
-    );
-  }
+  const handleGoBack = () => {
+    setCurrentPage("register");
+  };
+
+  const handleCancel = () => {};
+
+  const handleFinish = async () => {
+    const tripData = {
+      clientData,
+      tripStages,
+    };
+    try {
+      const response = await axiosInstance.post("trip/create/", tripData);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await axiosInstance.get<Country[]>("common/countries");
+        setCountries(response.data);
+      } catch (err) {
+        //   setError("Failed to load countries.");
+      }
+    };
+    fetchCountries();
+  }, []);
+
+  return (
+    <div>
+      {currentPage === "register" && (
+        <ClientDataPage
+          countries={countries}
+          onContinue={handleContinue}
+          initialData={clientData}
+          onCancel={handleCancel}
+        />
+      )}
+      {currentPage === "tripStages" && (
+        <TripStagesPage
+          onGoBack={handleGoBack}
+          tripStages={tripStages}
+          setTripStages={setTripStages}
+          countries={countries}
+          onFinish={handleFinish}
+        />
+      )}
+    </div>
+  );
 }
 
-export default RegisterPage;
+export default App;

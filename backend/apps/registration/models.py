@@ -6,11 +6,11 @@ from apps.common.models import BaseModel, Address, Country
 class ClientData(BaseModel):
     name = models.CharField(max_length=50)
     surname = models.CharField(max_length=50)
-    pesel = models.CharField(max_length=11, unique=True)
+    pesel = models.CharField(max_length=11)
     address = models.OneToOneField(Address, on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=20)
     email_address = models.EmailField()
-    resides_in = models.ManyToManyField(Country)
+    resides_in = models.ForeignKey(Country, on_delete=models.CASCADE)
 
     def clean(self):
         if not (2 < len(self.name) < 50):
