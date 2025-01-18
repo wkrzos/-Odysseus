@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import "../css/tripstages.css";
 
 function TripStagesPage() {
   const [data, setData] = useState(null);
