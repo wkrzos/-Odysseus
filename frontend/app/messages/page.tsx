@@ -27,6 +27,9 @@ const ConsulateMessages = () => {
   const [endDate, setEndDate] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
 
   // Pobierz listę krajów podczas ładowania komponentu
   useEffect(() => {
@@ -46,26 +49,39 @@ const ConsulateMessages = () => {
 
   // Pobierz wiadomości na podstawie filtrów
   const handleSearch = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+    if (validateSearch()) {
+      try {
+        setLoading(true);
+        setError(null);
 
-      const params = new URLSearchParams();
-      selectedCountries.forEach((country) =>
-        params.append("countries", country.toString())
-      );
-      if (startDate.length != 0) params.append("start_date", startDate);
-      if (startDate.length != 0) params.append("end_date", endDate);
+        const params = new URLSearchParams();
+        selectedCountries.forEach((country) =>
+          params.append("countries", country.toString())
+        );
+        if (startDate.length != 0) params.append("start_date", startDate);
+        if (startDate.length != 0) params.append("end_date", endDate);
 
-      const response = await axiosInstance.get<MessageWithCountries[]>(
-        `communication/messages/with_countries?${params.toString()}`
-      );
-      setMessages(response.data);
-    } catch (err) {
-      setError("Failed to load messages.");
-    } finally {
-      setLoading(false);
+        const response = await axiosInstance.get<MessageWithCountries[]>(
+          `communication/messages/with_countries?${params.toString()}`
+        );
+        setMessages(response.data);
+      } catch (err) {
+        setError("Failed to load messages.");
+      } finally {
+        setLoading(false);
+      }
     }
+  };
+
+  const validateSearch = () => {
+    const validationErrors: Record<string, string> = {};
+
+    if (endDate != "" && startDate != "" && startDate > endDate) {
+      validationErrors.end_date =
+        "End date must be greater or equal to start date";
+    }
+    setValidationErrors(validationErrors);
+    return validationErrors.end_date == undefined;
   };
 
   // Resetuj filtry
@@ -103,6 +119,9 @@ const ConsulateMessages = () => {
               setError(null);
             }}
           />
+          {validationErrors.end_date && (
+            <span className="error">{validationErrors.end_date}</span>
+          )}
         </label>
         <br />
 

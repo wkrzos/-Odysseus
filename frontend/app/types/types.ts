@@ -23,13 +23,13 @@ export interface ClientData {
   
   export interface StayOrganizer {
     name: string;
-    type: StayOrganizerType;
+    type: StayOrganizerType | null;
   }
   
   export enum StayOrganizerType {
-    PERSON,
-    TRAVEL_AGENCY,
-    EMPLOYER,
+    PERSON = 2,
+    TRAVEL_AGENCY = 3,
+    EMPLOYER = 4,
   }
   
   export interface TripStage {

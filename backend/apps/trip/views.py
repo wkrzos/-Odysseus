@@ -2,11 +2,15 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
-from django.db.models import Count
+from django.db.models import Count,F
+from datetime import datetime
+from calendar import monthrange
+
 
 from .models import TripStage,Trip,TripWarning
 from .serializers import TripStageSerializer, TripStageReportRequestSerializer,TripSerializer,TripWarningSerializer
 from ..registration.serializers import ClientDataSerializer
+from apps.data_analysis.service import TripStatisticService
 
 class TripWarningByCountryView(APIView):
     def get(self,request,country_id):
@@ -41,7 +45,11 @@ class TripCreateView(APIView):
                 return Response(stage_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             stage_serializer.save()
 
+        TripStatisticService.update_trip_statistics(trip_stages=trip_stages)
+        
         return Response({"message": "Trip created successfully", "trip_id": trip.id}, status=status.HTTP_201_CREATED)
+    
+
 
 
 class TripStageListView(APIView):

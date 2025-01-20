@@ -13,6 +13,8 @@ function App() {
   const [clientData, setClientData] = useState<ClientData | null>(null);
   const [tripStages, setTripStages] = useState<TripStage[]>([]);
   const [countries, setCountries] = useState<Country[]>([]);
+  const [warnings, setWarnings] = useState<string[]>([]);
+  const [errors, setErrors] = useState<Record<string, string>[]>([]);
 
   const handleContinue = (data: ClientData) => {
     setClientData(data);
@@ -67,6 +69,10 @@ function App() {
           setTripStages={setTripStages}
           countries={countries}
           onFinish={handleFinish}
+          warnings={warnings}
+          setWarnings={setWarnings}
+          errors={errors}
+          setErrors={setErrors}
         />
       )}
     </div>
