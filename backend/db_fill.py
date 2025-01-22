@@ -7,7 +7,7 @@ def insert_data():
         connection = psycopg2.connect(
             dbname="odysseus",  # Zmień na nazwę swojej bazy danych
             user="postgres",         # Zmień na nazwę użytkownika
-            password="admin",     # Zmień na hasło użytkownika
+            password="postgres",     # Zmień na hasło użytkownika
             host="localhost",             # Host bazy danych (np. localhost)
             port="5432"                   # Port PostgreSQL (domyślnie 5432)
         )

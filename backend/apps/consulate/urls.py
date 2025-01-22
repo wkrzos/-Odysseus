@@ -7,5 +7,5 @@ router.register(r'messages', MessageViewSet, basename='message')
 router.register(r'recipients', RecipientViewSet, basename='recipient')
 
 urlpatterns = [
-   *router.urls
+   *router.urls,
 ]

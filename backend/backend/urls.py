@@ -19,13 +19,8 @@ from rest_framework.schemas import get_schema_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('trip/', include('apps.trip.urls')),  
     path('common/', include('apps.common.urls')),
-    path('communication/', include('apps.communication.urls')),
     path('registration/', include('apps.registration.urls')),
-    path('openapi/', get_schema_view(
-        title="Twoje API",
-        description="Schemat API dla aplikacji",
-        version="1.0.0"
-    ), name='openapi-schema'),
+    path('consulate/', include('apps.consulate.urls')),
+    path('', include('apps.mock_external_systems.urls')),
 ]
