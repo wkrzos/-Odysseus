@@ -157,7 +157,7 @@ function TripStagesPage({
       <div className="header">
         <button onClick={onGoBack}>Cancel</button>
       </div>
-      <form>
+      <form onSubmit={handleSubmit}>
         {tripStages.map((stage, index) => (
           <div key={index} className="trip-stage">
             <h3>Stage {index + 1}</h3>
@@ -383,7 +383,6 @@ function TripStagesPage({
         </button>
         <button
           type="submit"
-          onClick={handleSubmit}
           // disabled={tripStages.length === 0}
         >
           Finish

@@ -73,7 +73,7 @@ function ClientDataPage({
         "Building number is required.";
     }
     if (!formData.address.locality) {
-      validationErrors["address.locality"] = "Town is required.";
+      validationErrors["address.locality"] = "Locality is required.";
     }
 
     // Walidacja numeru telefonu
@@ -139,7 +139,7 @@ function ClientDataPage({
         <div>
           <label htmlFor="pesel">PESEL*:</label>
           <input
-            type="text"
+            type="number"
             id="pesel"
             value={formData.pesel}
             onChange={(e) =>
@@ -264,7 +264,7 @@ function ClientDataPage({
         <div>
           <label htmlFor="phone_number">Phone Number*:</label>
           <input
-            type="text"
+            type="number"
             id="phone_number"
             value={formData.phone_number}
             onChange={(e) =>

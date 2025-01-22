@@ -18,9 +18,34 @@ h1, h2, h3 {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+.home-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
 
+.nav-links {
+  list-style: none;
+  padding: 0;
+}
+
+.nav-links li {
+  margin: 10px 0;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #007bff;
+  font-size: 18px;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
 label {
   display: block;
+  margin-top: 1rem;
   margin-bottom: 0.5rem;
   font-weight: bold;
 }
@@ -28,7 +53,7 @@ label {
 textarea, input, select, button {
   width: 100%;
   padding: 0.75rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.2rem;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
@@ -96,4 +121,3 @@ button:hover {
   gap: 8px; /* Odstęp między ikoną a tekstem */
   box-sizing: border-box;
 }
-
