@@ -56,7 +56,7 @@ export default function GenerateReport() {
 
     try {
       const response = await fetch(
-        "http://localhost:8000/trip/trip-stages/report/",
+        "http://localhost:8000/registration/trip-stages/report/",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

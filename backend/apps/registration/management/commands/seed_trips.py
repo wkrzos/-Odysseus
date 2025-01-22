@@ -4,8 +4,7 @@ import datetime
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from apps.trip.models import Trip, TripStage, StayOrganizer, StayOrganizerType
-from apps.registration.models import ClientData
+from apps.registration.models import Trip, TripStage, StayOrganizer, StayOrganizerType, ClientData
 from apps.common.models import Address, Country
 
 
@@ -53,7 +52,8 @@ class Command(BaseCommand):
                 'surname': 'Doe',
                 'address': address1,
                 'phone_number': '+48 123 456 789',
-                'email_address': 'john.doe@example.com'
+                'email_address': 'john.doe@example.com',
+                'resides_in': poland
             }
         )
 
@@ -64,7 +64,8 @@ class Command(BaseCommand):
                 'surname': 'Smith',
                 'address': address2,
                 'phone_number': '+49 159 888 777',
-                'email_address': 'anna.smith@example.com'
+                'email_address': 'anna.smith@example.com',
+                'resides_in': germany
             }
         )
 

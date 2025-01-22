@@ -44,10 +44,7 @@ INSTALLED_APPS = [
     'apps.common',
     'apps.consulate',
     'apps.registration',
-    'apps.trip',
-    'apps.communication',
-    'apps.data_analysis',
-    'apps.parameters',
+    'apps.mock_external_systems',
 ]
 
 MIDDLEWARE = [
@@ -95,7 +92,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'odysseus',
         'USER': 'postgres',
-        'PASSWORD': 'admin',
+        'PASSWORD': 'postgres',
         'HOST': 'localhost',
         'PORT': '5432',
     }
