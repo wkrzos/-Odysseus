@@ -9,6 +9,6 @@ urlpatterns = [
     path('',include(router.urls)),
     path('trip-stages/', TripStageListView.as_view(), name='trip-stages'),
     path('trip-stages/report/', TripStageReportView.as_view(), name='trip-stage-report'),
-    path('trip-warning/<int:country_id>/',TripWarningByCountryView.as_view(),name='trip-warning-by-country'),
-    path('create/',TripCreateView.as_view(),name='create'),
+    path('trip/trip-warning/<int:country_id>/',TripWarningByCountryView.as_view(),name='trip-warning-by-country'),
+    path('trip/create/',TripCreateView.as_view(),name='create'),
 ]

@@ -8,6 +8,7 @@ from datetime import datetime
 from calendar import monthrange
 from .models import ClientData
 from .serializers import ClientDataSerializer
+from ..consulate.service import TripStatisticService
 
 from .models import TripStage,Trip,TripWarning
 from .serializers import TripStageSerializer, TripStageReportRequestSerializer,TripSerializer,TripWarningSerializer
