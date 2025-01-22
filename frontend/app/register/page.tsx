@@ -5,27 +5,47 @@ import { ClientData, TripStage, Country } from "../types/types";
 import ClientDataPage from "./clientData";
 import TripStagesPage from "./tripStages";
 import "../globals.css";
+import { useRouter } from "next/navigation";
 
 function App() {
   const [currentPage, setCurrentPage] = useState<"register" | "tripStages">(
     "register"
   );
   const [clientData, setClientData] = useState<ClientData | null>(null);
-  const [tripStages, setTripStages] = useState<TripStage[]>([]);
+  const [tripStages, setTripStages] = useState<TripStage[]>([
+    {
+      arrival_date: "",
+      departure_date: "",
+      address: {
+        street: "",
+        building_number: "",
+        apartment_number: null,
+        locality: "",
+      },
+      country: null,
+      stayOrganizer: { name: "", type: null },
+    },
+  ]);
   const [countries, setCountries] = useState<Country[]>([]);
   const [warnings, setWarnings] = useState<string[]>([]);
-  const [errors, setErrors] = useState<Record<string, string>[]>([]);
-
+  const [errors, setErrors] = useState<Record<string, string>[]>([{}]);
+  const router = useRouter();
   const handleContinue = (data: ClientData) => {
     setClientData(data);
     setCurrentPage("tripStages");
+  };
+
+  const navigateTo = (path: string) => {
+    router.push(path);
   };
 
   const handleGoBack = () => {
     setCurrentPage("register");
   };
 
-  const handleCancel = () => {};
+  const handleCancel = () => {
+    navigateTo("/");
+  };
 
   const handleFinish = async () => {
     const tripData = {
@@ -35,6 +55,7 @@ function App() {
     try {
       const response = await axiosInstance.post("trip/create/", tripData);
       console.log(response.data);
+      navigateTo("/");
     } catch (error) {
       console.log(error);
     }

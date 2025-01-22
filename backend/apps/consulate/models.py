@@ -30,6 +30,7 @@ class Message(BaseModel):
     content = models.TextField()
     date = models.DateField(auto_now_add=True)
     recipients = models.ManyToManyField('Recipient', related_name='messages')
+    recipientCountries = models.ManyToManyField(Country, related_name='messages')
     author = models.ForeignKey(
         ConsulateEmployee,
         on_delete=models.CASCADE,
