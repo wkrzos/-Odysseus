@@ -9,7 +9,7 @@ class TripStatisticService:
         """
         Aktualizuje statystyki podróży na podstawie etapów podróży.
         """
-        stats_to_update = {}
+        stats_to_update = set([])
 
         for stage in trip_stages:
             # Wyciągnięcie dat przyjazdu i odjazdu
@@ -22,7 +22,7 @@ class TripStatisticService:
                 year, month = current_date.year, current_date.month
 
                 # Dodanie do słownika liczników dla month/year
-                stats_to_update[(year, month)] = stats_to_update.get((year, month), 0) + 1
+                stats_to_update.add((year, month))
 
                 # Przechodzimy do następnego miesiąca
                 _, last_day = monthrange(current_date.year, current_date.month)
@@ -30,12 +30,12 @@ class TripStatisticService:
                 current_date = next_month.replace(day=1)
 
         # Aktualizacja lub tworzenie statystyk w bazie
-        for (year, month), count in stats_to_update.items():
+        for (year, month) in stats_to_update:
             stat, created = TripStagesStatistic.objects.get_or_create(
                 year=year, month=month,
-                defaults={"trip_count": count}
+                defaults={"trip_count": 1}
             )
             if not created:
                 # Inkrementacja statystyk
-                stat.trip_count = F("trip_count") + count
+                stat.trip_count = F("trip_count") + 1
                 stat.save()

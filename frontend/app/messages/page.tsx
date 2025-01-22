@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import axiosInstance from "@/axiosConfig";
 import Select from "react-select";
 import "../globals.css";
+import { useRouter } from "next/navigation";
 
 interface MessageWithCountries {
   id: number;
@@ -19,6 +20,12 @@ interface Country {
 }
 
 const ConsulateMessages = () => {
+  const router = useRouter();
+
+  const navigateTo = (path: string) => {
+    router.push(path);
+  };
+
   const [messages, setMessages] = useState<MessageWithCountries[]>([]);
   const [countries, setCountries] = useState<Country[]>([]);
   const [isLoadingCountries, setIsLoadingCountries] = useState<boolean>(false);
@@ -86,7 +93,7 @@ const ConsulateMessages = () => {
 
   // Resetuj filtry
   const handleCancel = () => {
-    setMessages([]);
+    navigateTo("/");
   };
 
   return (
