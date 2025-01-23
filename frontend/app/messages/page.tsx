@@ -4,20 +4,7 @@ import axiosInstance from "@/axiosConfig";
 import Select from "react-select";
 import "../globals.css";
 import { useRouter } from "next/navigation";
-
-interface MessageWithCountries {
-  id: number;
-  content: string;
-  date: string;
-  author: string;
-  countries: string[];
-}
-
-interface Country {
-  id: number;
-  code: string;
-  name: string;
-}
+import { Country, Message } from "../types/types";
 
 const ConsulateMessages = () => {
   const router = useRouter();
@@ -26,7 +13,7 @@ const ConsulateMessages = () => {
     router.push(path);
   };
 
-  const [messages, setMessages] = useState<MessageWithCountries[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [countries, setCountries] = useState<Country[]>([]);
   const [isLoadingCountries, setIsLoadingCountries] = useState<boolean>(false);
   const [selectedCountries, setSelectedCountries] = useState<number[]>([]);
@@ -68,10 +55,11 @@ const ConsulateMessages = () => {
         if (startDate.length != 0) params.append("start_date", startDate);
         if (startDate.length != 0) params.append("end_date", endDate);
 
-        const response = await axiosInstance.get<MessageWithCountries[]>(
-          `communication/messages/with_countries?${params.toString()}`
+        const response = await axiosInstance.get<Message[]>(
+          `consulate/messages/with_countries?${params.toString()}`
         );
         setMessages(response.data);
+        console.log(response.data);
       } catch (err) {
         setError("Failed to load messages.");
       } finally {
@@ -172,17 +160,20 @@ const ConsulateMessages = () => {
       ) : messages.length > 0 ? (
         <div className="messages">
           <h2>Messages</h2>
-          <ul>
-            {messages.map((message) => (
-              <li key={message.id} className="message">
-                <strong>Date:</strong> {message.date || "Unknown"} <br />
-                <strong>Countries:</strong> {message.countries.join(", ")}{" "}
-                <br />
-                <strong>Author:</strong> {message.author} <br />
-                <strong>Content:</strong> {message.content}
-              </li>
-            ))}
-          </ul>
+          {messages.map((message) => (
+            <div className="message-container">
+              <strong>Date:</strong> {message.date || "Unknown"} <br />
+              <strong>Countries:</strong>{" "}
+              {message.recipientCountries
+                ? message.recipientCountries
+                    .map((country) => country.name)
+                    .join(", ")
+                : ""}
+              <br />
+              <strong>Author:</strong> {message.author} <br />
+              <strong>Content:</strong> {message.content}
+            </div>
+          ))}
         </div>
       ) : (
         <div></div>

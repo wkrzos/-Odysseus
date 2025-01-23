@@ -16,9 +16,17 @@ export interface ClientData {
   }
   
   export interface Country {
-    id: number;
     code: string;
+    id: number;
     name: string;
+  }
+
+  export interface Message {
+    id: number;
+    content: string;
+    date: string;
+    recipientCountries: Country[];
+    author: string;
   }
   
   export interface StayOrganizer {

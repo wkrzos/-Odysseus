@@ -22,3 +22,33 @@ class ConsulateEmployee(BaseModel):
 
     def __str__(self):
         return f"{self.name} {self.surname}"
+
+class MessageStatus(models.TextChoices):
+    SENT = 'sent', _('Sent')
+    NOT_SENT = 'notSent', _('Not Sent')
+
+class Message(BaseModel):
+    content = models.TextField()
+    date = models.DateField(auto_now_add=True)
+    recipientCountries = models.ManyToManyField(Country, related_name='messages')
+    author = models.ForeignKey(
+        ConsulateEmployee,
+        on_delete=models.CASCADE,
+        related_name='messages'
+    )
+
+class Recipient(BaseModel):
+    status = models.CharField(
+        max_length=10,
+        choices=MessageStatus.choices,
+        default=MessageStatus.NOT_SENT
+    )
+    phone_number = models.CharField(max_length=20)
+
+class TripStagesStatistic(BaseModel):
+    month = models.IntegerField()
+    year = models.IntegerField()
+    trip_count = models.IntegerField()
+
+class Parameters(BaseModel):
+    deleteTripAfterDays = models.IntegerField()

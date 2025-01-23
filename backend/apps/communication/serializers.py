@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Message, Recipient
-
+from apps.common.serializers import CountrySerializer
 
 class RecipientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -8,21 +8,12 @@ class RecipientSerializer(serializers.ModelSerializer):
         fields = ['id', 'status', 'phone_number']
 
 class MessageSerializer(serializers.ModelSerializer):
-    recipients = RecipientSerializer()
+    recipientCountries = CountrySerializer(read_only = True,many=True)
+    author = serializers.CharField()
     class Meta:
         model = Message
         fields = '__all__'
 
+        def get_author(self,obj):
+            return f"{obj.name} {obj.surname}"
 
-
-class MessageWithCountrySerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField()
-    countries = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Message
-        fields = ['id', 'content', 'date', 'author', 'countries']
-
-    def get_countries(self,obj):
-        consulate = obj.author.employee_of
-        return [country.name for country in consulate.managed_country.all()]

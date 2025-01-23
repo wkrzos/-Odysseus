@@ -171,7 +171,7 @@ function TripStagesPage({
             )}
 
             <div>
-              <label htmlFor="arrival_date">Arrival Date:</label>
+              <label htmlFor="arrival_date">Arrival Date*:</label>
               <input
                 type="date"
                 id="arrival_date"
@@ -188,7 +188,7 @@ function TripStagesPage({
               )}
             </div>
             <div>
-              <label htmlFor="departure_date">Departure Date:</label>
+              <label htmlFor="departure_date">Departure Date*:</label>
               <input
                 type="date"
                 id="departure_date"
@@ -205,7 +205,7 @@ function TripStagesPage({
               )}
             </div>
             <div>
-              <label htmlFor="street">Street:</label>
+              <label htmlFor="street">Street*:</label>
               <input
                 type="text"
                 id="street"
@@ -222,7 +222,7 @@ function TripStagesPage({
               )}
             </div>
             <div>
-              <label htmlFor="building_number">Building Number:</label>
+              <label htmlFor="building_number">Building number*:</label>
               <input
                 type="text"
                 id="building_number"
@@ -242,7 +242,7 @@ function TripStagesPage({
               )}
             </div>
             <div>
-              <label htmlFor="apartment_number">Apartment Number:</label>
+              <label htmlFor="apartment_number">Apartment number:</label>
               <input
                 type="text"
                 id="apartment_number"
@@ -259,7 +259,7 @@ function TripStagesPage({
               />
             </div>
             <div>
-              <label htmlFor="locality">Locality:</label>
+              <label htmlFor="locality">Locality*:</label>
               <input
                 type="text"
                 id="locality"
@@ -276,7 +276,7 @@ function TripStagesPage({
               )}
             </div>
             <div>
-              <label htmlFor="country">Country:</label>
+              <label htmlFor="country">Country*:</label>
               <select
                 id="country"
                 value={stage.country?.id || ""}
@@ -317,7 +317,7 @@ function TripStagesPage({
               </div>
             )}
             <div>
-              <label htmlFor="stay_organizer_type">Stay Organizer Type:</label>
+              <label htmlFor="stay_organizer_type">Stay Organizer Type*:</label>
               <select
                 id="stay_organizer_type"
                 value={
@@ -353,7 +353,7 @@ function TripStagesPage({
             {stage.stayOrganizer.type === StayOrganizerType.TRAVEL_AGENCY && (
               <div>
                 <label htmlFor="stay_organizer_name">
-                  Stay Organizer Name:
+                  Stay Organizer Name*:
                 </label>
                 <input
                   id="stay_organizer_name"
