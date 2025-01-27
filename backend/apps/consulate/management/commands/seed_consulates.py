@@ -3,6 +3,8 @@ from django.core.management.base import BaseCommand
 from apps.consulate.models import Consulate, ConsulateEmployee, Message, Recipient,MessageStatus
 from apps.common.models import Address, Country
 from django.utils.translation import gettext_lazy as _
+from datetime import datetime,timedelta
+from django.utils import timezone
 
 class Command(BaseCommand):
     """
@@ -57,6 +59,7 @@ class Command(BaseCommand):
             message = Message.objects.create(
                 content=f"This is a sample message.",
                 author=random.choice(employees),
+                date= (timezone.now() + timedelta(days=random.randint(-10,10)))
             )
             message.recipientCountries.set(random.sample(countries, k=2))  # Assign 2 random recipient countries
 

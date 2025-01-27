@@ -76,7 +76,7 @@ const ConsulateMessages = () => {
         "End date must be greater or equal to start date";
     }
     setValidationErrors(validationErrors);
-    return validationErrors.end_date == undefined;
+    return validationErrors.end_date == undefined && countries.length != 0;
   };
 
   // Resetuj filtry
