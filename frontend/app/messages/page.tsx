@@ -53,7 +53,7 @@ const ConsulateMessages = () => {
           params.append("countries", country.toString())
         );
         if (startDate.length != 0) params.append("start_date", startDate);
-        if (startDate.length != 0) params.append("end_date", endDate);
+        if (endDate.length != 0) params.append("end_date", endDate);
 
         const response = await axiosInstance.get<Message[]>(
           `consulate/messages/with_countries?${params.toString()}`

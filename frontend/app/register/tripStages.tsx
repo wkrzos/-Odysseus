@@ -85,7 +85,7 @@ function TripStagesPage({
       const countryID = country?.id;
       if (countryID) {
         const response = await axiosInstance.get<TripWarning>(
-          `trip/trip-warning/${countryID.toString()}`
+          `registration/trip-warning/${countryID.toString()}`
         );
         const updatedWarnings = [...warnings];
         updatedWarnings[index] = response.data.content;

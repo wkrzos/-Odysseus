@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Message, Recipient
 from django.db.models import Q
-from .serializers import MessageSerializer, RecipientSerializer
+from .serializers import MessageSerializer, RecipientSerializer,MessageWithCountrySerializer
 
 
 class RecipientViewSet(ModelViewSet):
@@ -30,7 +30,8 @@ class MessageViewSet(ModelViewSet):
         if end_date:
             messages = messages.filter(date__lte=end_date)
         if country_ids:
-            messages = messages.filter(recipientCountries__in=country_ids).distinct()
+            messages = messages.filter(
+                recipientCountries__in=country_ids).distinct()
 
-        serializer = MessageSerializer(messages, many=True)
+        serializer = MessageWithCountrySerializer(messages, many=True)
         return Response(serializer.data)

@@ -53,7 +53,10 @@ function App() {
       tripStages,
     };
     try {
-      const response = await axiosInstance.post("trip/create/", tripData);
+      const response = await axiosInstance.post(
+        "registration/create/",
+        tripData
+      );
       console.log(response.data);
       navigateTo("/");
     } catch (error) {

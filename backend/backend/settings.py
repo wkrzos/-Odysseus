@@ -44,10 +44,7 @@ INSTALLED_APPS = [
     'apps.common',
     'apps.consulate',
     'apps.registration',
-    'apps.trip',
-    'apps.communication',
-    'apps.data_analysis',
-    'apps.parameters',
+    'apps.mock_external_systems',
 ]
 
 MIDDLEWARE = [

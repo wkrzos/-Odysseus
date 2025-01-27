@@ -18,3 +18,6 @@ class Address(BaseModel):
 class Country(BaseModel):
     code = models.CharField(max_length=10, unique=True)
     name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
